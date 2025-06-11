@@ -13,115 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- CUSTOM STYLES -->
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #121212 linear-gradient(135deg, #29223d 0%, #1d2b3c 100%);
-            color: #f0f0f0;
-            min-height: 100vh;
-        }
-
-        .dashboard-title {
-            font-weight: 600;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
-
-        /* The Link Card Itself */
-        .link-card {
-            display: block;
-            text-decoration: none;
-            border-radius: 16px;
-            overflow: hidden; /* Important for rounding the corners of the preview */
-            height: 100%;
-
-            /* Glassmorphism Effect */
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .link-card:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
-        }
-
-        /* Website Preview Area */
-        .card-preview {
-            height: 150px;
-            background-color: #333; /* Fallback color while image loads */
-            background-size: cover;
-            background-position: top center; /* Show the top of the website */
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Loading Spinner */
-        .card-preview::after {
-            content: '';
-            display: block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        /* Hide spinner once background image is loaded by JS */
-        .card-preview.loaded::after {
-            display: none;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Card Information Area (below preview) */
-        .card-info {
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            background: rgba(0,0,0,0.2);
-        }
-
-        .card-favicon {
-            width: 32px;
-            height: 32px;
-            margin-right: 12px;
-            border-radius: 6px;
-            flex-shrink: 0; /* Prevent icon from shrinking */
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .card-text {
-            overflow: hidden; /* To handle long text with ellipsis */
-        }
-
-        .card-title {
-            color: #ffffff;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        .card-url {
-            color: #a0a0a0;
-            font-size: 0.8rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="py-5">
@@ -152,78 +44,14 @@
                     </a>
                 </div>
                 <!-- End Link Card Template -->
+
+                <!-- Add more link card templates here -->
+
             </div>
         </div>
     </main>
 
     <!-- INITIALIZATION SCRIPT -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const linkCards = document.querySelectorAll('.link-card');
-
-            linkCards.forEach(card => {
-                const url = card.dataset.url;
-                const title = card.dataset.title;
-
-                if (!url || !title) return;
-
-                // Set the link's destination
-                card.href = url;
-                card.target = "_blank"; // Open in new tab
-                card.rel = "noopener noreferrer";
-
-                // --- Generate the card's inner HTML ---
-                card.innerHTML = `
-                    <div class="card-preview"></div>
-                    <div class="card-info">
-                        <img class="card-favicon" alt="favicon">
-                        <div class="card-text">
-                            <p class="card-title">${title}</p>
-                            <p class="card-url"></p>
-                        </div>
-                    </div>
-                `;
-
-                const previewEl = card.querySelector('.card-preview');
-                const faviconEl = card.querySelector('.card-favicon');
-                const urlEl = card.querySelector('.card-url');
-
-                try {
-                    const hostname = new URL(url).hostname;
-                    urlEl.textContent = hostname;
-
-                    // --- Fetch Favicon using Google's free service ---
-                    const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
-                    faviconEl.src = faviconUrl;
-
-                    // --- Fetch Screenshot using WordPress's free service ---
-                    // Note: This won't work for localhost or sites that block crawlers.
-                    if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-                         previewEl.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" stroke="%23555" stroke-width="2"><path d="M100 300 L300 300 L350 250 L450 350 L500 300 L700 300" /><rect x="50" y="50" width="700" height="500" rx="20" ry="20" stroke-width="4"/></svg>')`;
-                         previewEl.classList.add('loaded'); // Mark as loaded to hide spinner
-                    } else {
-                        const screenshotUrl = `https://s.wordpress.com/mshots/v1/${encodeURIComponent(url)}?w=400&h=300`;
-                        
-                        // Create a temporary image to detect when it's loaded
-                        const img = new Image();
-                        img.onload = () => {
-                            previewEl.style.backgroundImage = `url(${screenshotUrl})`;
-                            previewEl.classList.add('loaded'); // Mark as loaded
-                        };
-                        img.onerror = () => {
-                            // Handle cases where the screenshot fails
-                            previewEl.classList.add('loaded'); // Hide spinner even on error
-                        };
-                        img.src = screenshotUrl;
-                    }
-                } catch (error) {
-                    // Handle invalid URLs gracefully
-                    urlEl.textContent = 'Invalid URL';
-                    previewEl.classList.add('loaded');
-                    card.href = '#';
-                }
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

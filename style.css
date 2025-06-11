@@ -1,0 +1,107 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #121212 linear-gradient(135deg, #29223d 0%, #1d2b3c 100%);
+    color: #f0f0f0;
+    min-height: 100vh;
+}
+
+.dashboard-title {
+    font-weight: 600;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+/* The Link Card Itself */
+.link-card {
+    display: block;
+    text-decoration: none;
+    border-radius: 16px;
+    overflow: hidden; /* Important for rounding the corners of the preview */
+    height: 100%;
+
+    /* Glassmorphism Effect */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.link-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Website Preview Area */
+.card-preview {
+    height: 150px;
+    background-color: #333; /* Fallback color while image loads */
+    background-size: cover;
+    background-position: top center; /* Show the top of the website */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loading Spinner */
+.card-preview::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Hide spinner once background image is loaded by JS */
+.card-preview.loaded::after {
+    display: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Card Information Area (below preview) */
+.card-info {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    background: rgba(0,0,0,0.2);
+}
+
+.card-favicon {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+    border-radius: 6px;
+    flex-shrink: 0; /* Prevent icon from shrinking */
+    background-color: rgba(255,255,255,0.1);
+}
+
+.card-text {
+    overflow: hidden; /* To handle long text with ellipsis */
+}
+
+.card-title {
+    color: #ffffff;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.card-url {
+    color: #a0a0a0;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
